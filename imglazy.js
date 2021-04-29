@@ -5,7 +5,7 @@
 class ImgLazy extends HTMLElement{
 
     static get observedAttributes(){
-        return ['src','lazy','placeholder']
+        return ['src','lazy','placeholder','width', 'height']
     }
 
     static get ATTR_LAZY(){return new Set(['true', 'false', ''])}
@@ -20,6 +20,12 @@ class ImgLazy extends HTMLElement{
     get src(){ return this.getAttribute("src")}
     set src(v){this.setAttribute("src", v)}
   
+    get width(){ return this.getAttribute("width")}
+    set width(v){ this.setAttribute("width", v)}
+    
+    get height(){ return this.getAttribute("height")}
+    set height(v){ this.setAttribute("height", v)}
+
      constructor(){
         super()
 
@@ -100,6 +106,27 @@ class ImgLazy extends HTMLElement{
 
                 break
             }
+            case 'width':{
+                if(newValue){
+                    this.style.setProperty('--img-width', newValue+'px');
+                    this.root.image.width = newValue
+                }
+                else
+                    this.style.removeProperty('--img-width')
+                    
+                
+                break
+            }
+            
+            case 'height':{
+                if(newValue){
+                    this.style.setProperty('--img-height', newValue+'px');
+                    this.root.image.height = newValue
+                }
+                else
+                    this.style.removeProperty('--img-height')
+                break
+            }
            
         }
     }
@@ -123,7 +150,11 @@ class ImgLazy extends HTMLElement{
         loaded(){
             console.debug('Image loaded',this.root)
             this._isLoaded = true
+            
+            this.style.removeProperty('--img-width')
+            this.style.removeProperty('--img-height')
             this.root.image.classList.remove('hidden')
+
             this.hidePlaceholder()
         }
 

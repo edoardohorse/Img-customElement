@@ -7,7 +7,15 @@
     <style>
     </style>
     <body>
-         <img-lazy src="img/lion/large.jpg" width="600"></img-lazy>
+        <h3>300x300 px (img contained)</h3>
+        <img-lazy src="img/lion/large.jpg" width=300 height=300 ></img-lazy>
+
+        <h3>300xauto px (img aspect ratio respected)</h3>
+        <img-lazy src="img/lion/large.jpg" width=300></img-lazy>
+
+        
+        <h3>autoxauto px (img aspect ratio respected, fitted to its parent)</h3>
+        <img-lazy src="img/trees.jpg" ></img-lazy>
 
          <!-- <img src="img/trees.jpg" width="600">
          <img src="img/sky.jpg" width="600">

@@ -9,7 +9,6 @@
     overflow: hidden;
     width: var(--placeholder-width);
     height: var(--placeholder-height);
-    border: 1px solid;
     background-color: var(--placeholder-bg);
 }
 
