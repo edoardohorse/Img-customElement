@@ -5,13 +5,17 @@
 class ImgLazy extends HTMLElement{
 
     static get observedAttributes(){
-        return ['src','lazy']
+        return ['src','lazy','placeholder']
     }
 
     static get ATTR_LAZY(){return new Set(['true', 'false', ''])}
+    static get ATTR_PLACEHOLDER(){return new Set(['true', 'false', ''])}
 
     get lazy(){ return this.getAttribute("lazy")}
     set lazy(v){this.setAttribute("lazy", v)}
+    
+    get placeholder(){ return this.getAttribute("placeholder")}
+    set placeholder(v){this.setAttribute("placeholder", v)}
     
     get src(){ return this.getAttribute("src")}
     set src(v){this.setAttribute("src", v)}
@@ -46,6 +50,7 @@ class ImgLazy extends HTMLElement{
             this._src = this.src
             this._isLoaded = false
             this._isLazy = false
+            this._isPlaceholderShowable = true
 
                     
         //#endregion
@@ -81,6 +86,20 @@ class ImgLazy extends HTMLElement{
 
                 break
             }
+            
+            case 'placeholder':{
+                if(!ImgLazy.ATTR_PLACEHOLDER.has(newValue)) return console.error('Can be setted only value: ', ImgLazy.ATTR_PLACEHOLDER)
+
+                if(newValue == "true" || newValue == ""){
+                    this._isPlaceholderShowable = this.root.placeholder.loading = true
+                }
+                else if(newValue == "false"){
+                    this._isPlaceholderShowable = this.root.placeholder.loading = false
+                }
+
+
+                break
+            }
            
         }
     }
@@ -110,10 +129,17 @@ class ImgLazy extends HTMLElement{
 
 
         showPlaceholder(){
+            if(!this._isPlaceholderShowable)
+                return
+
             console.debug('Show placeholder',this.root)
             this.root.placeholder.loading = true
         }
+
         hidePlaceholder(){
+            if(!this._isPlaceholderShowable)
+                return
+                
             console.debug('Hide placeholder',this.root)
             this.root.placeholder.loading = false
         }
