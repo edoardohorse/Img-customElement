@@ -139,7 +139,7 @@ class ImgLazy extends HTMLElement{
         hidePlaceholder(){
             if(!this._isPlaceholderShowable)
                 return
-                
+
             console.debug('Hide placeholder',this.root)
             this.root.placeholder.loading = false
         }
@@ -151,4 +151,4 @@ class ImgLazy extends HTMLElement{
 }
 
     
-customElements.define('img-custom', ImgLazy)
+customElements.define('img-lazy', ImgLazy)
