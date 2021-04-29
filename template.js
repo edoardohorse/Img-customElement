@@ -1,4 +1,7 @@
 'use strict';
+
+
+
 class ImgLazy extends HTMLElement{
 
     static get observedAttributes(){
@@ -18,7 +21,7 @@ class ImgLazy extends HTMLElement{
 
         //#region Root
         this.root       = this.attachShadow({mode: 'open'})
-        this.root.placeholder = document.createElement('main')     // zIndex 20
+        this.root.placeholder = new Placeholder()     // zIndex 20
         this.root.image = new Image()                              // zIndex 10
         this.root.style = document.createElement('link')
 
@@ -30,8 +33,6 @@ class ImgLazy extends HTMLElement{
 
 
         //placeholder
-        this.root.placeholder.textContent = 'Placeholder...'
-
         this.root.appendChild(this.root.placeholder)
 
         //img
@@ -113,11 +114,11 @@ class ImgLazy extends HTMLElement{
 
         showPlaceholder(){
             console.debug('Show placeholder',this.root)
-            this.root.placeholder.classList.remove('hidden')
+            this.root.placeholder.loading = true
         }
         hidePlaceholder(){
             console.debug('Hide placeholder',this.root)
-            this.root.placeholder.classList.add('hidden')
+            this.root.placeholder.loading = false
         }
 
     //#endregion
