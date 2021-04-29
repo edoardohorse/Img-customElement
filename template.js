@@ -69,7 +69,7 @@ class ImgLazy extends HTMLElement{
             }
 
             case 'lazy':{
-                if(!ClassName.ATTR_LAZY.has(newValue)) return console.error('Can be setted only value: ', ClassName.ATTR_LAZY)
+                if(!ImgLazy.ATTR_LAZY.has(newValue)) return console.error('Can be setted only value: ', ImgLazy.ATTR_LAZY)
 
                 if(newValue == "true" || newValue == ""){
                     this._isLazy = true
