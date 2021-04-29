@@ -36,13 +36,15 @@ class ImgLazy extends HTMLElement{
         this.root.appendChild(this.root.placeholder)
 
         //img
-        this.root.appendChild(this.root.image   )
+        this.root.image.classList.add('hidden')
+        this.root.appendChild(this.root.image)
 
         
         //#endregion
 
         //#region Fields        
             this._src = this.src
+            this._isLoaded = false
             this._isLazy = false
 
                     
@@ -53,6 +55,8 @@ class ImgLazy extends HTMLElement{
 
     connectedCallback(){
         this.addEventListener()
+
+        this.load()
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -77,18 +81,7 @@ class ImgLazy extends HTMLElement{
 
                 break
             }
-            /*case 'attr':{
-                if(!ClassName.ATTR.has(newValue)) return console.error('Can be setted only value: ', ClassName.ATTR)
-
-                if(newValue == "true" || newValue == ""){
-                    //
-                }
-                else if(newValue == "false"){
-                    //
-                }
-
-                break;
-            }*/
+           
         }
     }
 
@@ -96,18 +89,22 @@ class ImgLazy extends HTMLElement{
     
         addEventListener(){
             this.root.image.onload = this.loaded.bind(this)
-            
         }
 
         load(){
-            console.debug('Loading image...',this.root)
+            if(this._isLoaded)
+                return 
+
             this.showPlaceholder()
             this.root.image.src = this._src
+            
+            console.debug('Loading image...',this.root)
         }
 
         loaded(){
-            // debugger
             console.debug('Image loaded',this.root)
+            this._isLoaded = true
+            this.root.image.classList.remove('hidden')
             this.hidePlaceholder()
         }
 
