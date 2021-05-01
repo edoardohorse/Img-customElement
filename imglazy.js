@@ -3,7 +3,7 @@
 const OPTIONS_OBSERVER =  {
     root: null,
     rootMargin: '0px',
-    threshold: .40
+    threshold: .25
 }
 
 const observer = new IntersectionObserver( function(entries, observer){
@@ -204,7 +204,7 @@ class ImgLazy extends HTMLElement{
             this._isLoading = this._isLoaded = false
             this.classList.add('failed')
             observer.unobserve(this)
-            
+
             this.hidePlaceholder()
             
         }
