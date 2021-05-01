@@ -39,7 +39,6 @@
 }
 
 
-
 .hidden{
     visibility: hidden;
 }
@@ -47,4 +46,21 @@
 img{
     position: relative;
     z-index: 10;
+}
+
+p{
+   display: none;
+   align-items: center;
+   justify-content: center;
+   font-size: 20px;
+   height: 100%;
+   margin: 0;
+}
+
+:host(.failed) > p{
+    display: flex;
+}
+
+:host(.failed) > img{
+    display: none;
 }

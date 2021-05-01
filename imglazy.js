@@ -5,8 +5,10 @@
 class ImgLazy extends HTMLElement{
 
     static get observedAttributes(){
-        return ['src','lazy','placeholder','width', 'height']
+        return ['src','lazy','placeholder','width', 'height','alt']
     }
+
+    static get TEXT_FAILED_LOADING(){return "Image not found 😢"}
 
     static get ATTR_LAZY(){return new Set(['true', 'false', ''])}
     static get ATTR_PLACEHOLDER(){return new Set(['true', 'false', ''])}
@@ -25,14 +27,18 @@ class ImgLazy extends HTMLElement{
     
     get height(){ return this.getAttribute("height")}
     set height(v){ this.setAttribute("height", v)}
+    
+    get alt(){ return this.getAttribute("alt")}
+    set alt(v){ this.setAttribute("alt", v)}
 
      constructor(){
         super()
 
         //#region Root
         this.root       = this.attachShadow({mode: 'open'})
-        this.root.placeholder = new Placeholder()     // zIndex 20
-        this.root.image = new Image()                              // zIndex 10
+        this.root.placeholder = new Placeholder()               // zIndex 20
+        this.root.image = new Image()                           // zIndex 10
+        this.root.altText = document.createElement('p')
         this.root.style = document.createElement('link')
 
         //style
@@ -49,6 +55,9 @@ class ImgLazy extends HTMLElement{
         this.root.image.classList.add('hidden')
         this.root.appendChild(this.root.image)
 
+        //altText
+        this.root.altText.textContent = ImgLazy.TEXT_FAILED_LOADING
+        this.root.appendChild(this.root.altText)
         
         //#endregion
 
@@ -125,6 +134,17 @@ class ImgLazy extends HTMLElement{
                     this.style.removeProperty('--img-height')
                 break
             }
+
+            case 'alt':{
+                // if it's an image
+                if(newValue.match(/\w+\.(jpg|jpeg|gif|png|tiff|bmp)$/gi))
+                    this.src = newValue
+                else if(newValue != "")
+                    this.root.altText.textContent = newValue
+                else
+                this.root.altText.textContent = ImgLazy.TEXT_FAILED_LOADING
+                break
+            }
            
         }
     }
@@ -155,8 +175,18 @@ class ImgLazy extends HTMLElement{
             this.style.removeProperty('--img-width')
             this.style.removeProperty('--img-height')
             this.root.image.classList.remove('hidden')
+            this.classList.remove('failed')
 
             this.hidePlaceholder()
+        }
+
+        failed(){
+            console.debug('Failed load img', this.root)
+            
+            this.classList.add('failed')
+
+            this.hidePlaceholder()
+            
         }
 
 
