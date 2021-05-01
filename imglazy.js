@@ -31,7 +31,7 @@ class ImgLazy extends HTMLElement{
     get alt(){ return this.getAttribute("alt")}
     set alt(v){ this.setAttribute("alt", v)}
 
-     constructor(){
+     constructor(autoloading = true){
         super()
 
         //#region Root
@@ -64,8 +64,10 @@ class ImgLazy extends HTMLElement{
         //#region Fields        
             this._src = this.src
             this._isLoaded = false
+            this._isLoading = false
             this._isLazy = false
             this._isPlaceholderShowable = true
+            this._autoLoading = autoloading
 
                     
         //#endregion
@@ -81,7 +83,8 @@ class ImgLazy extends HTMLElement{
         switch(name){
             case 'src':{
                 this._src = newValue
-                this.load()
+                if(this._autoLoading)
+                    this.load()
                 break
             }
 
@@ -152,9 +155,10 @@ class ImgLazy extends HTMLElement{
     
 
         load(){
-            if(this._isLoaded)
+            if(this._isLoaded || this._isLoading)
                 return 
-
+            
+            this._isLoading = true
             this.showPlaceholder()
             this.root.image.src = this._src
             this.root.image.decode()
@@ -170,6 +174,7 @@ class ImgLazy extends HTMLElement{
 
             console.debug('Image loaded',this.root)
             this._isLoaded = true
+            this._isLoading = false
             
             this.style.removeProperty('--img-width')
             this.style.removeProperty('--img-height')
@@ -182,6 +187,7 @@ class ImgLazy extends HTMLElement{
         failed(){
             console.debug('Failed load img', this.root)
             
+            this._isLoading = this._isLoaded = false
             this.classList.add('failed')
 
             this.hidePlaceholder()

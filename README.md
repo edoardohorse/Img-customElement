@@ -21,6 +21,10 @@
     
 ```
 
+## Constructor (autoloading = true)
+
+Decide to load the image automatically, instead needed to call `load()` method
+
 ## Properties
 
 | Property   | Attribute  | Description | Type      | Default         |
@@ -41,6 +45,7 @@
 
 
 ### ⚠️ Important
+- When 
 - When `width` and `height` are not setted, img-lazy has the same size of parent
 - When `width` is setted and `height` not, img-lazy has height as width while loading (square); once loaded `height` is **auto** to img (aspect ratio respected)
 - When `height` is setted and `width` not, img-lazy has width as height while loading (square); once loaded `width` is **auto** to img (aspect ratio respected)
