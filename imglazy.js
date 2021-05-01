@@ -74,15 +74,14 @@ class ImgLazy extends HTMLElement{
     }
 
     connectedCallback(){
-        this.load()
+        // this.load()
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
         switch(name){
             case 'src':{
-                if(this._isLazy)
-                    this.removeAttribute("src")
-
+                this._src = newValue
+                this.load()
                 break
             }
 
