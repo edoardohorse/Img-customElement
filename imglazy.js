@@ -1,6 +1,20 @@
 'use strict';
 
+const OPTIONS_OBSERVER =  {
+    root: null,
+    rootMargin: '0px',
+    threshold: .40
+}
 
+const observer = new IntersectionObserver( function(entries, observer){
+        entries.forEach(entry => {
+            if(entry.isIntersecting){
+                entry.target.load()
+                // debugger
+            }
+        })
+    }
+    , OPTIONS_OBSERVER);
 
 class ImgLazy extends HTMLElement{
 
@@ -31,7 +45,7 @@ class ImgLazy extends HTMLElement{
     get alt(){ return this.getAttribute("alt")}
     set alt(v){ this.setAttribute("alt", v)}
 
-     constructor(autoloading = true){
+     constructor(){
         super()
 
         //#region Root
@@ -65,10 +79,8 @@ class ImgLazy extends HTMLElement{
             this._src = this.src
             this._isLoaded = false
             this._isLoading = false
-            this._isLazy = false
+            this._isLazy = true
             this._isPlaceholderShowable = true
-            this._autoLoading = autoloading
-
                     
         //#endregion
         
@@ -76,15 +88,14 @@ class ImgLazy extends HTMLElement{
     }
 
     connectedCallback(){
-        // this.load()
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
         switch(name){
             case 'src':{
                 this._src = newValue
-                if(this._autoLoading)
-                    this.load()
+                if(this._isLazy)
+                    setTimeout( _=>{observer.observe(this)}, 50)
                 break
             }
 
@@ -93,9 +104,11 @@ class ImgLazy extends HTMLElement{
 
                 if(newValue == "true" || newValue == ""){
                     this._isLazy = true
+                    observer.observe(this)
                 }
                 else if(newValue == "false"){
                     this._isLazy = false
+                    observer.unobserve(this)
                 }
 
 
@@ -180,6 +193,7 @@ class ImgLazy extends HTMLElement{
             this.style.removeProperty('--img-height')
             this.root.image.classList.remove('hidden')
             this.classList.remove('failed')
+            observer.unobserve(this)
 
             this.hidePlaceholder()
         }
@@ -189,7 +203,8 @@ class ImgLazy extends HTMLElement{
             
             this._isLoading = this._isLoaded = false
             this.classList.add('failed')
-
+            observer.unobserve(this)
+            
             this.hidePlaceholder()
             
         }

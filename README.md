@@ -21,10 +21,6 @@
     
 ```
 
-## Constructor (autoloading = true)
-
-Decide to load the image automatically, instead needed to call `load()` method
-
 ## Properties
 
 | Property   | Attribute  | Description | Type      | Default         |
