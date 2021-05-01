@@ -65,8 +65,6 @@ class ImgLazy extends HTMLElement{
     }
 
     connectedCallback(){
-        this.addEventListener()
-
         this.load()
     }
 
@@ -133,9 +131,6 @@ class ImgLazy extends HTMLElement{
 
     //#region Private
     
-        addEventListener(){
-            this.root.image.onload = this.loaded.bind(this)
-        }
 
         load(){
             if(this._isLoaded)
@@ -143,11 +138,17 @@ class ImgLazy extends HTMLElement{
 
             this.showPlaceholder()
             this.root.image.src = this._src
+            this.root.image.decode()
+                .then(this.loaded.bind(this))
+                .catch(this.failed.bind(this));
             
             console.debug('Loading image...',this.root)
         }
 
         loaded(){
+            if(!this.root.image.complete)
+                return
+
             console.debug('Image loaded',this.root)
             this._isLoaded = true
             
