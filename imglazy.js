@@ -48,6 +48,8 @@ class ImgLazy extends HTMLElement{
     
     get size(){ return this.getAttribute("size")}
     set size(v){ this.setAttribute("size", v)}
+
+    get complete(){return this.root.image.complete}
     
 
      constructor(){
