@@ -15,6 +15,8 @@
         height=[100%]
 
         alt='url|text'
+
+        size=fill|[contain]|cover|none|scale-down
         >
 
     </img-lazy>
@@ -30,6 +32,7 @@
 | `width`  | `width`| Set width of img (see [Important](#%EF%B8%8F-important))| `int`  | `100% of image`     |
 | `height`  | `height`| Set height of img (see [Important](#%EF%B8%8F-important)) | `int`  | `100% of image`     |
 | `alt`  | `alt`| Set an alternative image or text to show when loading fails | `text` or `url`  | `Image not found 😢`     |
+| `size`  | `size`| Reflect CSS property objectFit, to set size of img | `text`  | `contain`     |
 
 <!-- ## CSS Variables
 
