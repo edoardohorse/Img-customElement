@@ -6,10 +6,15 @@ const OPTIONS_OBSERVER =  {
     threshold: .25
 }
 
+let loading = false
+
 const observer = new IntersectionObserver( function(entries, observer){
         entries.forEach(entry => {
-            if(entry.isIntersecting){
-                entry.target.load()
+            if(entry.isIntersecting && !loading){
+                loading = true
+                entry.target.load().then(_=>{
+                    loading = false
+                })
                 // debugger
             }
         })
@@ -48,6 +53,11 @@ class ImgLazy extends HTMLElement{
     
     get size(){ return this.getAttribute("size")}
     set size(v){ this.setAttribute("size", v)}
+
+    set readyToLoad(v){
+        // this._readToLoad = v
+        // observer.observe(this)
+    }
     
 
      constructor(){
@@ -86,6 +96,27 @@ class ImgLazy extends HTMLElement{
             this._isLoading = false
             this._isLazy = true
             this._isPlaceholderShowable = true
+            this._readToLoad = false
+            this._loaded = resolve=>{
+                if(!this.root.image.complete) return
+
+                console.debug('Image loaded',this.root)
+                this._isLoaded = true
+                this._isLoading = false
+                
+                this.style.removeProperty('--img-width')
+                this.style.removeProperty('--img-height')
+                this.root.image.classList.remove('hidden')
+                this.classList.remove('failed')
+                observer.unobserve(this)
+
+                this.hidePlaceholder()
+
+                resolve()
+            }
+           /*  this._promiseLoad = new Promise(resolve=>{
+                if(this._isLoaded) resolve()
+            }) */
                     
         //#endregion
         
@@ -93,14 +124,16 @@ class ImgLazy extends HTMLElement{
     }
 
     connectedCallback(){
+        observer.observe(this)
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
+        
         switch(name){
             case 'src':{
                 this._src = newValue
-                if(this._isLazy)
-                    setTimeout( _=>{observer.observe(this)}, 50)
+                // if(oldValue != newValue)
+                //     this.load()
                 break
             }
 
@@ -109,11 +142,11 @@ class ImgLazy extends HTMLElement{
 
                 if(newValue == "true" || newValue == ""){
                     this._isLazy = true
-                    observer.observe(this)
+                    // observer.observe(this)
                 }
                 else if(newValue == "false"){
                     this._isLazy = false
-                    observer.unobserve(this)
+                    // observer.unobserve(this)
                 }
 
 
@@ -173,7 +206,8 @@ class ImgLazy extends HTMLElement{
 
                 break
             }
-           
+            
+            
         }
     }
 
@@ -181,34 +215,23 @@ class ImgLazy extends HTMLElement{
     
 
         load(){
-            if(this._isLoaded || this._isLoading)
-                return 
-            
-            this._isLoading = true
-            this.showPlaceholder()
-            this.root.image.src = this._src
-            this.root.image.decode()
-                .then(this.loaded.bind(this))
-                .catch(this.failed.bind(this));
-            
-            console.debug('Loading image...',this.root)
-        }
+            return new Promise(resolve=>{
 
-        loaded(){
-            if(!this.root.image.complete)
-                return
+                if(this._isLoaded || this._isLoading)
+                    return
 
-            console.debug('Image loaded',this.root)
-            this._isLoaded = true
-            this._isLoading = false
-            
-            this.style.removeProperty('--img-width')
-            this.style.removeProperty('--img-height')
-            this.root.image.classList.remove('hidden')
-            this.classList.remove('failed')
-            observer.unobserve(this)
+                
+                
+                this._isLoading = true
+                this.showPlaceholder()
+                this.root.image.src = this._src
+                this.root.image.decode()
+                    .then(this._loaded.bind(this, resolve))
+                    .catch(this.failed.bind(this));
+                
+                console.debug('Loading image...',this.root)
 
-            this.hidePlaceholder()
+            })
         }
 
         failed(){
@@ -246,4 +269,14 @@ class ImgLazy extends HTMLElement{
 }
 
     
-customElements.define('img-lazy', ImgLazy)
+// window.addEventListener('DOMContentLoaded',function(){
+
+    customElements.define('img-lazy', ImgLazy)
+/*})
+customElements.whenDefined('img-lazy').then(_=>{
+    Array.from(document.querySelectorAll('img-lazy')).forEach(img=>{
+        console.log('Ready to load')
+        img.readyToLoad = true
+    })
+})
+*/
