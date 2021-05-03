@@ -10,7 +10,6 @@ const observer = new IntersectionObserver( function(entries, observer){
         entries.forEach(entry => {
             if(entry.isIntersecting){
                 entry.target.load()
-                // debugger
             }
         })
     }
@@ -48,6 +47,11 @@ class ImgLazy extends HTMLElement{
     
     get size(){ return this.getAttribute("size")}
     set size(v){ this.setAttribute("size", v)}
+
+    set readyToLoad(v){
+        this._readToLoad = v
+        observer.observe(this)
+    }
     
 
      constructor(){
@@ -63,6 +67,9 @@ class ImgLazy extends HTMLElement{
         //style
         this.root.style.setAttribute('rel','stylesheet')
         this.root.style.setAttribute('href','img.css')
+        this.root.style.addEventListener('load', _=>{
+            this.readyToLoad = true
+        })
 
         this.root.appendChild(this.root.style)
 
