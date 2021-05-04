@@ -62,7 +62,7 @@ class ImgLazy extends HTMLElement{
     get complete(){return this.root.image.complete}
     
 
-     constructor(){
+    constructor(src = null){
         super()
 
         //#region Root
@@ -98,8 +98,9 @@ class ImgLazy extends HTMLElement{
         
         //#endregion
 
-        //#region Fields        
-            this._src = this.src
+        //#region Fields
+            if(src) this.src = src
+            else    this._src = this.src
             this._isLoaded = false
             this._isLoading = false
             this._isLazy = true
@@ -136,6 +137,7 @@ class ImgLazy extends HTMLElement{
                 }
                 else if(newValue == "false"){
                     this._isLazy = false
+                    this._readToLoad = true
                 }
 
 

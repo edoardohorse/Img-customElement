@@ -1,7 +1,8 @@
 # [Demo](https://edoardohorse.github.io/Img-customElement/)
 
+# Dependecies
 
-<!-- # Variants -->
+[Placeholder-customElement](https://edoardohorse.github.io/Placeholder-customElement/)
     
 # Syntax
 
@@ -21,6 +22,14 @@
 
     </img-lazy>
     
+```
+
+## Constructor ( [url = null] )
+
+```javascript
+    new ImgLazy()
+    or
+    new ImgLazy( 'url' )
 ```
 
 ## Properties
